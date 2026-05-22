@@ -1,0 +1,28 @@
+{
+  "id": "com.neoos.app.tv-client-nosat",
+  "version": "5.4.0",
+  "vendor": "NeoOS",
+  "title": "NeoTV",
+  "type": "web",
+  "main": "index.html",
+  "icon": "icon.png",
+  "largeIcon": "icon_large.png",
+  "category": "video",
+  "requiredPermissions": [
+    "webOS.service.media",
+    "webOS.service.storage",
+    "webOS.service.network"
+  ],
+  "features": [
+    "fullscreen",
+    "video"
+  ],
+  "dependencies": {},
+  "description": "NeoTV ist eine Multi-TV-App für NeoOS. Sie zeigt FASTTV-Sender, Mediatheken und lokale Videos.",
+  "license": "MIT",
+  "developer": {
+    "name": "NeoAudio",
+    "email": "neoaudio@murena.io",
+    "url": "https://example.com"
+  }
+}

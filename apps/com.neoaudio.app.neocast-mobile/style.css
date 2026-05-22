@@ -1,0 +1,311 @@
+/* ==========================================================================
+   Global Reset & Base Styles
+   ========================================================================== */
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+    -webkit-tap-highlight-color: transparent;
+}
+body { 
+    background: #121212; 
+    color: #ffffff; 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+    width: 100vw;
+    height: 100vh;
+}
+
+#app-container { 
+    display: flex; 
+    width: 100%; 
+    height: 100%; 
+}
+
+/* ==========================================================================
+   Sidebar Navigation (Tablet / Desktop Modus)
+   ========================================================================== */
+#sidebar {
+    width: 280px;
+    background: #1a1a1a;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 30px 15px;
+    border-right: 1px solid #2a2a2a;
+    flex-shrink: 0;
+}
+.sidebar-title { 
+    font-size: 24px; 
+    font-weight: bold; 
+    color: #0088ff; 
+    margin-bottom: 30px; 
+    text-align: center; 
+}
+.nav-item {
+    padding: 15px;
+    font-size: 18px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: #aaa;
+    transition: background 0.2s, color 0.2s;
+}
+.nav-item .material-symbols-sharp {
+    font-size: 24px;
+}
+.nav-item.active { 
+    background: #0088ff; 
+    color: white; 
+    font-weight: bold; 
+}
+.nav-item:active {
+    background: #0066cc;
+}
+
+/* ==========================================================================
+   Content Area & Responsive Grid
+   ========================================================================== */
+#content-area { 
+    flex: 1; 
+    padding: 30px; 
+    height: 100%; 
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+.section-title { 
+    font-size: 28px; 
+    margin-bottom: 20px; 
+}
+.grid-container { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px; 
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 40px;
+}
+
+/* ==========================================================================
+   Cards (Media Kacheln)
+   ========================================================================== */
+.card {
+    background: #1e1e1e;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    aspect-ratio: 4 / 3;
+    border: 1px solid #2a2a2a;
+}
+.card:active {
+    background: #2a2a2a;
+    transform: scale(0.98);
+}
+.card.add-card, .card.manage-card, .card.folder-card {
+    border: 2px dashed #444;
+    background: #151515;
+}
+.card .material-symbols-sharp {
+    font-size: 48px;
+    color: #0088ff;
+}
+.card-logo-container {
+    height: 60px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+.card-logo {
+    max-width: 100%;  
+    max-height: 100%;  
+    object-fit: contain;
+}
+.card-title { 
+    font-size: 16px; 
+    font-weight: bold; 
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-sub { 
+    font-size: 12px; 
+    color: #888; 
+    margin-top: 4px; 
+}
+
+/* ==========================================================================
+   Modals
+   ========================================================================== */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    padding: 20px;
+}
+.modal-box {
+    width: 100%;
+    max-width: 500px;
+    background: #1a1a1a;
+    padding: 25px;
+    border-radius: 16px;
+    border: 1px solid #333;
+}
+.modal-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+.input-row { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 15px; 
+    margin-bottom: 20px; 
+}
+.input-row input {
+    width: 100%;
+    padding: 14px;
+    background: #2a2a2a;
+    border: 1px solid #444;
+    color: white;
+    border-radius: 8px;
+    font-size: 16px;
+}
+.input-row input:focus {
+    border-color: #0088ff;
+    outline: none;
+}
+.modal-buttons { display: flex; gap: 10px; }
+.modal-buttons button {
+    flex: 1;
+    padding: 14px;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+#add-btn, #save-edit-btn { background: #0088ff; }
+.neutral-btn { background: #333333; }
+.danger-btn { background: #cc2929; }
+
+#own-channels-list {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    border: 1px solid #333;
+    border-radius: 8px;
+}
+.manage-list-item {
+    padding: 15px;
+    border-bottom: 1px solid #2a2a2a;
+    display: flex;
+    justify-content: space-between;
+}
+.manage-list-item-sub { color: #0088ff; font-size: 14px; }
+
+/* ==========================================================================
+   Overlays & Mobile Close-Button
+   ========================================================================== */
+#player-overlay, #webview-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: black;
+    display: none;
+    z-index: 300;
+}
+video, iframe { width: 100%; height: 100%; border: none; }
+
+.close-overlay-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 310;
+    cursor: pointer;
+}
+
+/* ==========================================================================
+   SMARTPHONE OPTIMIERUNG (Media Query für Mobile Touch Layout)
+   ========================================================================== */
+@media (max-width: 768px) {
+    #app-container {
+        flex-direction: column-reverse; /* Dreht das Layout: Navigation nach unten */
+    }
+
+    #sidebar {
+        width: 100%;
+        height: 70px;
+        flex-direction: row;
+        padding: 0;
+        justify-content: space-around;
+        border-right: none;
+        border-top: 1px solid #2a2a2a;
+        z-index: 100;
+    }
+
+    .sidebar-title { display: none; } /* Titel auf dem Smartphone ausblenden */
+
+    .nav-item {
+        margin-bottom: 0;
+        border-radius: 0;
+        flex-direction: column;
+        justify-content: center;
+        gap: 4px;
+        font-size: 11px;
+        flex: 1;
+        padding: 5px 0;
+        background: transparent !important; /* Entfernt blauen Hintergrund auf Mobile */
+        color: #888;
+    }
+
+    .nav-item.active {
+        color: #0088ff; /* Aktiver Tab wird blau gefärbt */
+    }
+
+    .nav-item .material-symbols-sharp {
+        font-size: 22px;
+    }
+
+    #content-area {
+        padding: 20px 15px;
+    }
+
+    .section-title {
+        font-size: 24px;
+    }
+
+    .grid-container {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); /* Kleinere Kacheln im Zweierspalt-System */
+        gap: 12px;
+        padding-bottom: 80px; /* Platzhalter wegen der Bottom-Bar */
+    }
+    
+    .card-title {
+        font-size: 14px;
+    }
+}

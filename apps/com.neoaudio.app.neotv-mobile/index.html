@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NeoTV Mobile</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="content-area">
+        <h1 class="section-title" id="area-title">Live IPTV</h1>
+        <div class="grid-container" id="grid"></div>
+    </div>
+
+    <div id="bottom-nav">
+        <div class="nav-item active" id="menu-iptv" onclick="changeMenu(0)">
+            <span class="material-symbols-sharp">public</span> <span class="nav-text">Live IPTV</span>
+        </div>
+        <div class="nav-item" id="menu-default" onclick="changeMenu(1)">
+            <span class="material-symbols-sharp">tv</span> <span class="nav-text">Basis Sender</span>
+        </div>
+        <div class="nav-item" id="menu-custom" onclick="changeMenu(2)">
+            <span class="material-symbols-sharp">star</span> <span class="nav-text">Eigene Sender</span>
+        </div>
+        <div class="nav-item" id="menu-local" onclick="changeMenu(3)">
+            <span class="material-symbols-sharp">folder_open</span> <span class="nav-text">Lokale Medien</span>
+        </div>
+    </div>
+</div>
+
+<input type="file" id="local-folder-picker" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelected(event)">
+
+<div id="add-channel-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="material-symbols-sharp modal-icon-header">add_circle</span>
+            <h3>Neuen IPTV Sender</h3>
+        </div>
+        <div class="input-row">
+            <input type="text" id="add-title" placeholder="Sendername (z.B. ProSieben)">
+            <input type="text" id="add-url" placeholder="Stream URL (.m3u8)">
+            <input type="text" id="add-logo" placeholder="Logo Bild-URL (optional)">
+        </div>
+        <div class="modal-buttons">
+            <button id="add-btn" onclick="addNewChannel()">Speichern</button>
+            <button class="neutral-btn" onclick="closeAddModal()">Abbrechen</button>
+        </div>
+    </div>
+</div>
+
+<div id="manage-channels-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="material-symbols-sharp modal-icon-header">settings</span>
+            <h3 id="manage-modal-title">Sender verwalten</h3>
+        </div>
+        <div id="manage-list-view">
+            <div id="own-channels-list"></div>
+            <div class="modal-buttons">
+                <button class="neutral-btn" onclick="closeManageModal()">Schließen</button>
+            </div>
+        </div>
+        <div id="manage-edit-view" style="display: none;">
+            <div class="input-row">
+                <input type="text" id="edit-title" placeholder="Sendername">
+                <input type="text" id="edit-url" placeholder="Stream URL (.m3u8)">
+                <input type="text" id="edit-logo" placeholder="Logo Bild-URL">
+            </div>
+            <div class="modal-buttons">
+                <button id="save-edit-btn" onclick="saveEditedChannel()">Speichern</button>
+                <button class="danger-btn" onclick="deleteChannel()">Löschen</button>
+                <button class="neutral-btn" onclick="backToManageList()">Zurück</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="player-overlay">
+    <video id="native-player" autoplay playsinline webkit-playsinline></video>
+    
+    <div id="player-click-shield" onclick="toggleControlsVisibility()"></div>
+
+    <div id="custom-controls" class="controls-visible">
+        <div class="controls-top">
+            <button class="ctrl-btn back-btn" onclick="closeOverlays(event)">
+                <span class="material-symbols-sharp">arrow_back</span>
+            </button>
+            <div class="epg-info">
+                <div id="epg-title">Lade Programm-Guide...</div>
+                <div id="epg-meta">Sender | --:-- - --:--</div>
+            </div>
+        </div>
+
+        <div id="cc-tracks-menu" style="display: none;"></div>
+
+        <div class="controls-bottom">
+            <div class="timeline-container">
+                <span id="time-current">00:00</span>
+                <input type="range" id="timeline-slider" min="0" max="100" value="0" oninput="seekVideo(this.value)">
+                <span id="time-duration">00:00</span>
+            </div>
+            
+            <div class="controls-row">
+                <button class="ctrl-btn" id="btn-play-pause" onclick="togglePlay()">
+                    <span class="material-symbols-sharp">pause</span>
+                </button>
+                
+                <div class="controls-right">
+                    <button class="ctrl-btn" id="btn-cc" onclick="toggleCCMenu(event)">
+                        <span class="material-symbols-sharp">closed_caption</span>
+                    </button>
+                    <button class="ctrl-btn" id="btn-pip" onclick="togglePiP()">
+                        <span class="material-symbols-sharp">picture_in_picture</span>
+                    </button>
+                    <button class="ctrl-btn" id="btn-mute" onclick="toggleMute()">
+                        <span class="material-symbols-sharp">volume_up</span>
+                    </button>
+                    <button class="ctrl-btn" onclick="toggleFullscreenToggle()">
+                        <span class="material-symbols-sharp">fullscreen_exit</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

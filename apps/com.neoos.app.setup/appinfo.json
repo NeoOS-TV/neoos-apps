@@ -1,0 +1,17 @@
+{
+    "id": "com.neoos.app.setupwizard",
+    "version": "1.0.0",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoOS Setup",
+    "icon": "icon.png",
+    "resolution": "1920x1080",
+    "bgColor": "#121212",
+    "uiRevision": 2,
+    "transparent": false,
+    "requiredPermissions": [
+        "com.webos.service.wifi.management",
+        "com.webos.applicationManager.launch"
+    ]
+}

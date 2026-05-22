@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>NeoEmby TV App</title>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <div id="sidebar">
+            <div class="sidebar-title">NeoEmby</div>
+            
+            <div id="sidebar-nav">
+                <div style="padding:15px; color:#666; font-size:14px;">Lade Bibliotheken...</div>
+            </div>
+
+            <div class="sidebar-footer">
+                <div class="sidebar-status">
+                    Status: <span id="server-status">Prüfe...</span>
+                </div>
+                <div class="sidebar-info" id="app-info-display">
+                    Lade App Infos...
+                </div>
+            </div>
+        </div>
+
+        <div id="content-area">
+            <h1 class="section-title" id="area-title">Inhalte</h1>
+            
+            <div class="grid-container" id="grid"></div>
+
+            <div id="settings-view" style="display: none;">
+                <div class="settings-box">
+                    <h2>Emby Verbindung einrichten</h2>
+                    <div class="input-row">
+                        <label for="emby-url">Server URL (inkl. Port)</label>
+                        <input type="text" id="emby-url" placeholder="http://192.168.178.X:8096" autocomplete="off">
+                    </div>
+                    <div class="input-row">
+                        <label for="emby-token">API Schlüssel (Token)</label>
+                        <input type="text" id="emby-token" placeholder="Dein API-Key aus Emby" autocomplete="off">
+                    </div>
+                    <button class="action-btn" id="save-btn">Verbindung speichern</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="detail-view" style="display: none;">
+        <div id="detail-backdrop"></div>
+        <div class="detail-gradient"></div>
+        <div class="detail-container">
+            <div class="detail-poster-box">
+                <img id="detail-poster" src="" alt="Poster">
+            </div>
+            <div class="detail-info">
+                <h1 id="detail-title">Titel</h1>
+                <div class="detail-meta">
+                    <span id="detail-year">0000</span>
+                    <span id="detail-runtime">0 Min</span>
+                    <span id="detail-genres">Genre</span>
+                </div>
+                <p id="detail-overview">Beschreibung...</p>
+                
+                <div class="detail-buttons">
+                    <button class="detail-btn" id="btn-detail-play">Abspielen</button>
+                    <button class="detail-btn" id="btn-detail-restart" style="display: none;">Von vorne</button>
+                    <button class="detail-btn" id="btn-detail-back">Zurück</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="player-overlay">
+        <video id="native-player"></video>
+        
+        <div id="player-osd">
+            <div class="osd-gradient"></div>
+            <div class="osd-content">
+                <h2 id="osd-title">Titel</h2>
+                
+                <div class="progress-container" id="progress-container">
+                    <span class="time-label" id="time-current">00:00:00</span>
+                    <div class="progress-bar-bg">
+                        <div id="progress-bar-fill"></div>
+                    </div>
+                    <span class="time-label" id="time-total">00:00:00</span>
+                </div>
+
+                <div class="osd-buttons">
+                    <button class="osd-btn" id="btn-rw"><span class="material-symbols-sharp">fast_rewind</span></button>
+                    <button class="osd-btn" id="btn-play-pause"><span class="material-symbols-sharp">pause</span></button>
+                    <button class="osd-btn" id="btn-ff"><span class="material-symbols-sharp">fast_forward</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

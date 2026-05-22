@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoStore</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script defer src="script.js"></script>
+</head>
+<body>
+    <div id="app-container">
+        
+        <div id="sidebar">
+            <div class="sidebar-title">Neo<span>Store</span></div>
+            
+            <div class="nav-block">
+                <div class="nav-item" id="menu-search">
+                    <span class="material-symbols-sharp">search</span>
+                    Store Suche
+                </div>
+                <div class="nav-item active" id="menu-apps">
+                    <span class="material-symbols-sharp">apps</span>
+                    Anwendungen
+                </div>
+            </div>
+
+            <div class="nav-block footer-nav">
+                <div class="sidebar-sub-title">Repositories</div>
+                <div id="dynamic-repos"></div>
+                <div class="nav-item" id="menu-repo-mgr">
+                    <span class="material-symbols-sharp">settings_applications</span>
+                    Repo Management
+                </div>
+            </div>
+        </div>
+
+        <div id="content-area">
+            <div class="section-title" id="area-title">Verfügbare Apps</div>
+            
+            <div class="grid-container" id="grid"></div>
+
+            <div id="repo-management-view" style="display: none; flex: 1; flex-direction: column; gap: 30px;">
+                <div class="repo-input-container">
+                    <div id="repo-fake-input" class="repo-focusable">Repo-URL eingeben...</div>
+                    <button id="btn-add-repo" class="repo-focusable">Hinzufügen</button>
+                </div>
+                <div id="repo-list-container">
+                    <h4 style="font-size: 24px; margin-bottom: 15px; color: #888;">Installierte Quellen:</h4>
+                    <div id="repo-management-list"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="app-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <span class="material-symbols-sharp modal-icon-header">download</span>
+                <h3 id="modal-title">App-Name</h3>
+            </div>
+            
+            <div style="display: flex; gap: 30px; margin-bottom: 25px; align-items: center;">
+                <div class="card-logo-container" style="width: 140px; height: 120px; background: #252525; border-radius: 12px; margin-bottom: 0;">
+                    <img id="modal-icon" src="" alt="Logo" class="card-logo">
+                </div>
+                <div style="flex: 1; text-align: left;">
+                    <p id="modal-id" style="font-size: 18px; color: #888; margin-bottom: 5px;">com.vendor.app</p>
+                    <p id="modal-version" style="font-size: 20px; color: #0088ff; font-weight: bold;">v1.0.0</p>
+                </div>
+            </div>
+
+            <div class="input-row" style="margin-bottom: 35px;">
+                <div id="modal-desc" style="font-size: 18px; color: #aaaaaa; line-height: 1.6; text-align: left; background: #222; padding: 20px; border-radius: 8px; max-height: 250px; overflow-y: auto;">
+                    Beschreibung...
+                </div>
+            </div>
+
+            <div class="modal-buttons" id="modal-btn-container">
+                <button id="btn-install" class="modal-focusable">Installieren</button>
+                <button id="btn-close" class="modal-focusable neutral-btn">Schließen</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

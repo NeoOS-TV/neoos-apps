@@ -1,0 +1,128 @@
+[
+  {
+    "id": "com.neoos.app.appstore",
+    "version": "1.3.3",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoStore",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "requiredPermissions": [
+      "application.operation",
+      "com.webos.appInstallService.manage"
+    ],
+    "resolution": "1920x1080",
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.appstore/icon.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.appstore/description.md"
+  },
+  {
+    "id": "com.neoos.app.emby",
+    "version": "1.10.2",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoEmby",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "width": 1920,
+    "height": 1080,
+    "uiRevision": 5,
+    "requiredPermissions": [
+      "internet"
+    ],
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.emby/icon.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.emby/description.md"
+  },
+  {
+    "id": "com.neoos.app.neocast",
+    "version": "1.2.0",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoCast",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "resolution": "1920x1080",
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.neocast/icon_pure.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.neocast/description.md"
+  },
+  {
+    "id": "com.neoos.app.radio-client",
+    "version": "1.0.0",
+    "vendor": "NeoOS",
+    "title": "NeoRadio",
+    "type": "web",
+    "main": "index.html",
+    "icon": "icon.png",
+    "largeIcon": "large_icon.png",
+    "category": "audio",
+    "requiredPermissions": [
+      "webOS.service.media",
+      "webOS.service.storage",
+      "webOS.service.network"
+    ],
+    "features": [
+      "fullscreen"
+    ],
+    "dependencies": {},
+    "description": "NeoRadio ist die Radio-App für NeoOS. Sie streamt weltweit freie Radiosender über die Radio-Browser API.",
+    "license": "MIT",
+    "developer": {
+      "name": "NeoAudio",
+      "email": "support@neoaudio.com",
+      "url": "https://neoaudio.com"
+    },
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.radio-client/icon.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.radio-client/description.md"
+  },
+  {
+    "id": "com.neoos.app.setupwizard",
+    "version": "1.0.0",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoOS Setup",
+    "icon": "icon.png",
+    "resolution": "1920x1080",
+    "bgColor": "#121212",
+    "uiRevision": 2,
+    "transparent": false,
+    "requiredPermissions": [
+      "com.webos.service.wifi.management",
+      "com.webos.applicationManager.launch"
+    ],
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.setup/icon.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.setup/description.md"
+  },
+  {
+    "id": "com.neoos.app.tv-client-nosat",
+    "version": "5.4.0",
+    "vendor": "NeoOS",
+    "title": "NeoTV",
+    "type": "web",
+    "main": "index.html",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "category": "video",
+    "requiredPermissions": [
+      "webOS.service.media",
+      "webOS.service.storage",
+      "webOS.service.network"
+    ],
+    "features": [
+      "fullscreen",
+      "video"
+    ],
+    "dependencies": {},
+    "description": "NeoTV ist eine Multi-TV-App für NeoOS. Sie zeigt FASTTV-Sender, Mediatheken und lokale Videos.",
+    "license": "MIT",
+    "developer": {
+      "name": "NeoAudio",
+      "email": "neoaudio@murena.io",
+      "url": "https://example.com"
+    },
+    "raw_icon_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.tv-client-nosat/icon.png",
+    "raw_readme_url": "https://raw.githubusercontent.com/NeoOS-TV/neoos-apps/main/apps/com.neoos.app.tv-client-nosat/description.md"
+  }
+]

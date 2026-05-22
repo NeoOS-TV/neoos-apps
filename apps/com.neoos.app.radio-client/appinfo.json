@@ -1,0 +1,27 @@
+{
+  "id": "com.neoos.app.radio-client",
+  "version": "1.0.0",
+  "vendor": "NeoOS",
+  "title": "NeoRadio",
+  "type": "web",
+  "main": "index.html",
+  "icon": "icon.png",
+  "largeIcon": "large_icon.png",
+  "category": "audio",
+  "requiredPermissions": [
+    "webOS.service.media",
+    "webOS.service.storage",
+    "webOS.service.network"
+  ],
+  "features": [
+    "fullscreen"
+  ],
+  "dependencies": {},
+  "description": "NeoRadio ist die Radio-App für NeoOS. Sie streamt weltweit freie Radiosender über die Radio-Browser API.",
+  "license": "MIT",
+  "developer": {
+    "name": "NeoAudio",
+    "email": "support@neoaudio.com",
+    "url": "https://neoaudio.com"
+  }
+}

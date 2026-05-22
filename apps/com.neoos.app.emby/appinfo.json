@@ -1,0 +1,16 @@
+{
+    "id": "com.neoos.app.emby",
+    "version": "1.10.2",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoEmby",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "width": 1920,
+    "height": 1080,
+    "uiRevision": 5,
+    "requiredPermissions": [
+        "internet"
+    ]
+}

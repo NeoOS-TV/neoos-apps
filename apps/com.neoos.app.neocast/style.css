@@ -1,0 +1,82 @@
+* { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
+body { 
+    background: radial-gradient(circle, #141416 0%, #08080a 100%);
+    color: #ffffff; 
+    font-family: 'Segoe UI', -apple-system, sans-serif; 
+    width: 1920px; height: 1080px; 
+    overflow: hidden;
+}
+
+#app-container { width: 1920px; height: 1080px; display: flex; justify-content: center; align-items: center; }
+
+#waiting-screen { text-align: center; display: flex; flex-direction: column; align-items: center; gap: 40px; }
+
+.cast-icon { font-size: 110px; color: #0088ff; animation: pulse-glow 2s infinite ease-in-out; }
+h1 { font-size: 72px; font-weight: bold; letter-spacing: 2px; }
+.subtitle { font-size: 26px; color: #666; margin-top: -20px; }
+
+.pairing-box {
+    background: #18181c; border: 2px solid #25252b; padding: 35px 70px;
+    border-radius: 24px; box-shadow: 0 25px 60px rgba(0,0,0,0.7);
+}
+.pairing-label { font-size: 18px; color: #0088ff; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; font-weight: bold; }
+#pairing-code { font-size: 84px; font-weight: 900; letter-spacing: 15px; color: #ffffff; font-family: monospace; }
+
+.info-text { font-size: 22px; color: #aaa; line-height: 1.6; }
+/* Ergänzung für die Namensbearbeitung */
+.name-edit-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    height: 96px;
+}
+
+#tv-device-title {
+    cursor: pointer;
+}
+
+#tv-device-input {
+    background: #1c1c22;
+    border: 2px solid #0088ff;
+    color: #ffffff;
+    font-size: 72px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 12px;
+    outline: none;
+    padding: 0 20px;
+    width: 600px;
+    height: 90px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.edit-icon {
+    font-size: 32px;
+    color: #444;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.name-edit-container:hover .edit-icon {
+    color: #0088ff;
+}
+
+
+/* Video Stream Container */
+#stream-screen { position: relative; width: 1920px; height: 1080px; background: #000; }
+#remote-video { width: 1920px; height: 1080px; object-fit: contain; }
+
+#stream-overlay { 
+    position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); 
+    background: rgba(10,10,12,0.9); border: 1px solid #333; padding: 16px 32px; 
+    border-radius: 40px; font-size: 20px; display: flex; align-items: center; gap: 15px; 
+}
+
+.pulse-dot { width: 12px; height: 12px; background: #00ffaa; border-radius: 50%; animation: blink 1.5s infinite; }
+
+@keyframes pulse-glow {
+    0%, 100% { transform: scale(1); opacity: 0.8; filter: drop-shadow(0 0 0px rgba(0,136,255,0)); }
+    50% { transform: scale(1.04); opacity: 1; filter: drop-shadow(0 0 20px rgba(0,136,255,0.5)); }
+}
+@keyframes blink { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }

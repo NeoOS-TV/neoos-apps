@@ -1,0 +1,11 @@
+{
+    "id": "com.neoos.app.neocast",
+    "version": "1.2.0",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoCast",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "resolution": "1920x1080"
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoCast TV Receiver</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+</head>
+<body>
+
+    <div id="app-container">
+        
+        <div id="waiting-screen">
+            <span class="material-symbols-sharp cast-icon">cast_connected</span>
+            
+            <div class="name-edit-container">
+                <h1 id="tv-device-title" onclick="startEditingName()">NeoPlay</h1>
+                <input type="text" id="tv-device-input" style="display: none;" onblur="saveNewName()" onkeydown="checkNameKey(event)">
+                <span class="material-symbols-sharp edit-icon" onclick="startEditingName()">edit</span>
+            </div>
+            
+            <p class="subtitle">Bereit zum Streamen</p>
+
+            <div class="pairing-box">
+                <div class="pairing-label">Pairing Code</div>
+                <div id="pairing-code">----</div>
+            </div>
+
+            <p class="info-text">Öffne die NeoCast App auf deinem Smartphone.<br>Dein Gerät sucht automatisch im Netzwerk.</p>
+        </div>
+
+        <div id="stream-screen" style="display: none;">
+            <video id="remote-video" autoplay playsinline muted></video>
+            <div id="stream-overlay">
+                <span class="pulse-dot"></span>
+                <span class="material-symbols-sharp">cast</span> 
+                <span id="stream-status-text">Live-Übertragung aktiv</span>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

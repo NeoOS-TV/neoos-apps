@@ -1,0 +1,15 @@
+{
+    "id": "com.neoos.app.appstore",
+    "version": "1.3.3",
+    "vendor": "NeoOS",
+    "type": "web",
+    "main": "index.html",
+    "title": "NeoStore",
+    "icon": "icon.png",
+    "largeIcon": "icon_large.png",
+    "requiredPermissions": [
+        "application.operation",
+        "com.webos.appInstallService.manage"
+    ],
+    "resolution": "1920x1080"
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoTV - TV Edition</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="sidebar">
+        <div class="sidebar-title">NeoTV</div>
+        <div class="nav-item active" id="menu-iptv">
+            <span class="material-symbols-sharp">travel_explore</span> Online Liste
+        </div>
+        <div class="nav-item" id="menu-default">
+            <span class="material-symbols-sharp">tv</span> Basis Sender
+        </div>
+        <div class="nav-item" id="menu-custom">
+            <span class="material-symbols-sharp">auto_awesome</span> Eigene Sender
+        </div>
+        <div class="nav-item" id="menu-local">
+            <span class="material-symbols-sharp">folder_open</span> Lokale Medien
+        </div>
+    </div>
+
+    <div id="content-area">
+        <h1 class="section-title" id="area-title">Online Liste</h1>
+        <div class="grid-container" id="grid"></div>
+    </div>
+</div>
+
+<input type="file" id="local-folder-picker" webkitdirectory directory multiple style="display: none;" onchange="handleFolderSelected(event)">
+
+<div id="add-channel-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="material-symbols-sharp modal-icon-header">add_circle</span>
+            <h3>Neuen IPTV Sender hinzufügen</h3>
+        </div>
+        <div class="input-row">
+            <input type="text" id="add-title" placeholder="Sendername (z.B. ProSieben)" readonly>
+            <input type="text" id="add-url" placeholder="Stream URL (.m3u8)" readonly>
+            <input type="text" id="add-logo" placeholder="Logo Bild-URL (optional)" readonly>
+        </div>
+        <div class="modal-buttons">
+            <button id="add-btn" class="modal-focusable" onclick="addNewChannel()">Speichern</button>
+            <button id="cancel-btn" class="modal-focusable neutral-btn" onclick="closeAddModal()">Abbrechen</button>
+        </div>
+    </div>
+</div>
+
+<div id="manage-channels-modal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="material-symbols-sharp modal-icon-header">settings</span>
+            <h3 id="manage-modal-title">Eigene Sender verwalten</h3>
+        </div>
+        <div id="manage-list-view">
+            <div id="own-channels-list"></div>
+            <div class="modal-buttons">
+                <button id="manage-close-btn" class="modal-focusable neutral-btn" onclick="closeManageModal()">Schließen</button>
+            </div>
+        </div>
+        <div id="manage-edit-view" style="display: none;">
+            <div class="input-row">
+                <input type="text" id="edit-title" placeholder="Sendername" readonly>
+                <input type="text" id="edit-url" placeholder="Stream URL (.m3u8)" readonly>
+                <input type="text" id="edit-logo" placeholder="Logo Bild-URL" readonly>
+            </div>
+            <div class="modal-buttons">
+                <button id="save-edit-btn" class="modal-focusable" onclick="saveEditedChannel()">Speichern</button>
+                <button id="delete-btn" class="modal-focusable danger-btn" onclick="deleteChannel()">Löschen</button>
+                <button id="edit-back-btn" class="modal-focusable neutral-btn" onclick="backToManageList()">Zurück</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="player-overlay" onclick="toggleControlsVisibility()">
+    <video id="native-player" playsinline webkit-playsinline></video>
+    
+    <div id="custom-controls" class="controls-visible" onclick="event.stopPropagation()">
+        <div id="epg-info-display">
+            <h2 id="epg-title">Lade Programm...</h2>
+            <p id="epg-meta">Sender-Wiedergabe</p>
+        </div>
+        
+        <div id="player-ui-row">
+            <div id="player-buttons-container">
+                <button id="btn-play-pause" class="player-focusable" onclick="togglePlay()">
+                    <span class="material-symbols-sharp">pause</span>
+                </button>
+                <button id="btn-mute" class="player-focusable" onclick="toggleMute()">
+                    <span class="material-symbols-sharp">volume_up</span>
+                </button>
+                <button id="btn-cc" class="player-focusable" onclick="toggleCCMenu(event)">
+                    <span class="material-symbols-sharp">closed_caption</span>
+                </button>
+            </div>
+            
+            <div id="timeline-container">
+                <span id="time-current">Live</span>
+                <input type="range" id="timeline-slider" min="0" max="100" value="0" step="0.1" oninput="seekVideo(this.value)">
+                <span id="time-duration">--:--:--</span>
+            </div>
+        </div>
+        
+        <div id="cc-tracks-menu"></div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoOS Dev Wiki</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@24,400,1,0" />
+    <style>
+        :root {
+            --bg-main: #0f172a; --bg-sidebar: #1e293b; --border-color: #334155;
+            --text-main: #f8fafc; --text-muted: #94a3b8; --accent: #38bdf8; --code-bg: #1e293b;
+            --success: #2da44e;
+        }
+        * { box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: var(--bg-main); color: var(--text-main); margin: 0; display: flex; height: 100vh; overflow: hidden; }
+
+        /* Sidebar & Kacheln */
+        .sidebar { width: 320px; background-color: var(--bg-sidebar); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; flex-shrink: 0; }
+        .sidebar-header { padding: 1.5rem; border-bottom: 1px solid var(--border-color); }
+        .sidebar-header h1 { font-size: 1.25rem; margin: 0 0 1rem 0; color: var(--accent); }
+        .search-box { width: 100%; padding: 0.6rem 1rem; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 6px; color: var(--text-main); font-size: 0.9rem; outline: none; }
+        
+        .app-list { flex: 1; overflow-y: auto; list-style: none; padding: 0; margin: 0; }
+        .app-item { padding: 1rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.05); cursor: pointer; display: flex; align-items: center; gap: 0.75rem; }
+        .app-item:hover { background-color: rgba(255,255,255,0.02); }
+        .app-item.active { background-color: rgba(56, 189, 248, 0.12); border-left: 4px solid var(--accent); }
+        .app-item img { width: 36px; height: 36px; border-radius: 8px; background: #000; object-fit: cover; }
+        .app-item-info { display: flex; flex-direction: column; overflow: hidden; }
+        .app-item-title { font-weight: 600; font-size: 0.95rem; }
+        .app-item-id { font-size: 0.75rem; color: var(--text-muted); text-overflow: ellipsis; overflow: hidden; white-space: nowrap; }
+
+        /* Main Content */
+        .content-area { flex: 1; background-color: var(--bg-main); overflow-y: auto; padding: 3rem; position: relative; }
+        .back-button { display: none; background: var(--bg-sidebar); border: 1px solid var(--border-color); color: var(--text-main); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; margin-bottom: 1.5rem; }
+        .welcome-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; color: var(--text-muted); text-align: center; }
+        .hidden { display: none !important; }
+
+        .wiki-header { display: flex; align-items: center; gap: 1.5rem; border-bottom: 1px solid var(--border-color); padding-bottom: 1.5rem; margin-bottom: 2rem; }
+        .wiki-header img { width: 70px; height: 70px; border-radius: 14px; background: #000; object-fit: cover; }
+        .wiki-title h2 { font-size: 1.8rem; margin: 0; }
+        
+        .tech-table { width: 100%; border-collapse: collapse; margin-bottom: 2.5rem; }
+        .tech-table th, .tech-table td { padding: 0.6rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        .tech-table th { color: var(--text-muted); font-weight: 500; width: 220px; }
+        .tech-table td { font-family: monospace; color: #e2e8f0; font-size: 0.9rem; }
+
+        /* Download Sektion */
+        .download-list { list-style: none; padding: 0; margin: 0 0 2.5rem 0; display: flex; flex-direction: column; gap: 0.5rem; }
+        .download-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg-sidebar); border: 1px solid var(--border-color); padding: 0.75rem 1.25rem; border-radius: 8px; }
+        .download-item:hover { border-color: rgba(56, 189, 248, 0.4); }
+        .download-info { display: flex; align-items: center; gap: 10px; font-family: monospace; font-size: 0.9rem; }
+        .btn-download { background-color: var(--success); color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 4px; cursor: pointer; text-decoration: none; font-weight: 600; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-download:hover { opacity: 0.9; }
+        .material-symbols-sharp { font-size: 18px; vertical-align: middle; font-variation-settings: 'FILL' 1; }
+
+        .markdown-body { line-height: 1.6; color: #e2e8f0; }
+        .markdown-body h1, .markdown-body h2 { color: var(--accent); margin-top: 2rem; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 0.3rem; }
+        .markdown-body code { background-color: var(--code-bg); padding: 0.2rem 0.4rem; border-radius: 4px; font-family: monospace; color: #f472b6; }
+        .markdown-body pre { background-color: var(--code-bg); padding: 1rem; border-radius: 8px; overflow-x: auto; border: 1px solid var(--border-color); }
+        .badge { background: #334155; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.8rem; margin-right: 0.4rem; display: inline-block; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 100%; }
+            .content-area { display: none; padding: 1.5rem; }
+            body.app-selected .sidebar { display: none; }
+            body.app-selected .content-area { display: block; }
+            body.app-selected .back-button { display: inline-flex; align-items: center; }
+            .tech-table th, .tech-table td { display: block; width: 100%; padding: 0.4rem 0; }
+            .tech-table th { border-bottom: none; color: var(--accent); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h1>NeoOS Apps Wiki</h1>
+            <input type="text" id="search" class="search-box" placeholder="Apps durchsuchen...">
+        </div>
+        <ul class="app-list" id="app-list"></ul>
+    </div>
+
+    <div class="content-area">
+        <button id="back-btn" class="back-button">← Zurück zur Übersicht</button>
+        <div id="welcome" class="welcome-screen"><h2 id="welcome-text">Lade Index...</h2></div>
+        
+        <div id="wiki-content" class="hidden">
+            <div class="wiki-header">
+                <img id="app-icon" src="" alt="Icon">
+                <div class="wiki-title">
+                    <h2 id="app-title"></h2>
+                    <div style="color: var(--text-muted); margin-top: 0.25rem;">Vendor: <span id="app-vendor" style="color:var(--accent)"></span></div>
+                </div>
+            </div>
+
+            <h3>Spezifikationen</h3>
+            <table class="tech-table">
+                <tr><th>App ID</th><td id="tech-id"></td></tr>
+                <tr><th>Version</th><td id="tech-version"></td></tr>
+                <tr><th>Typ</th><td id="tech-type"></td></tr>
+                <tr><th>Main Entry</th><td id="tech-main"></td></tr>
+                <tr><th>Auflösung</th><td id="tech-res"></td></tr>
+                <tr><th>Berechtigungen</th><td id="tech-permissions"></td></tr>
+            </table>
+
+            <h3>Downloads / IPK Builds</h3>
+            <ul id="ipk-downloads" class="download-list">
+                <li><em>Suche nach verfügbaren Builds...</em></li>
+            </ul>
+
+            <h3>Dokumentation</h3>
+            <div id="md-render" class="markdown-body"></div>
+        </div>
+    </div>
+
+    <script>
+        let apps = [];
+        const listContainer = document.getElementById('app-list');
+        const contentScreen = document.getElementById('wiki-content');
+
+        const GH_OWNER = "NeoOS-TV";
+        const GH_REPO = "neoos-apps";
+
+        async function loadWiki() {
+            try {
+                const response = await fetch(`index.json?t=${new Date().getTime()}`);
+                apps = await response.json();
+                renderSidebar();
+                document.getElementById('welcome-text').innerText = "Wähle eine App aus.";
+            } catch (error) {
+                document.getElementById('welcome-text').innerHTML = "<span style='color:red'>Fehler beim Laden der index.json.</span>";
+            }
+        }
+
+        function renderSidebar(filter = '') {
+            listContainer.innerHTML = '';
+            const filtered = apps.filter(a => (a.title || "").toLowerCase().includes(filter.toLowerCase()) || (a.id || "").toLowerCase().includes(filter.toLowerCase()));
+
+            filtered.forEach(app => {
+                const li = document.createElement('li');
+                li.className = 'app-item';
+                li.innerHTML = `
+                    <img src="${app.raw_icon_url}" onerror="this.src='https://via.placeholder.com/64?text=App'">
+                    <div class="app-item-info">
+                        <span class="app-item-title">${app.title || 'Unknown'}</span>
+                        <span class="app-item-id">${app.id}</span>
+                    </div>
+                `;
+                li.onclick = () => loadAppDoc(app, li);
+                listContainer.appendChild(li);
+            });
+        }
+
+        async function loadAppDoc(app, element) {
+            document.querySelectorAll('.app-item').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.body.classList.add('app-selected');
+
+            document.getElementById('welcome').classList.add('hidden');
+            contentScreen.classList.remove('hidden');
+
+            document.getElementById('app-icon').src = app.raw_icon_url;
+            document.getElementById('app-title').innerText = app.title;
+            document.getElementById('app-vendor').innerText = app.vendor || 'N/A';
+            document.getElementById('tech-id').innerText = app.id;
+            document.getElementById('tech-version').innerText = app.version || '0.0.0';
+            document.getElementById('tech-type').innerText = app.type || 'N/A';
+            document.getElementById('tech-main').innerText = app.main || 'N/A';
+            document.getElementById('tech-res').innerText = app.resolution || 'Beliebig';
+
+            const permTd = document.getElementById('tech-permissions');
+            permTd.innerHTML = '';
+            if (app.requiredPermissions && app.requiredPermissions.length > 0) {
+                app.requiredPermissions.forEach(p => permTd.innerHTML += `<span class="badge">${p}</span>`);
+            } else {
+                permTd.innerText = 'Keine';
+            }
+
+            // Nutzt die App-ID, um den passenden Ordner auf GitHub völlig autonom zu scannen
+            loadIPKBuilds(app.id);
+
+            const mdContainer = document.getElementById('md-render');
+            mdContainer.innerHTML = "<em>Lade Dokumentation...</em>";
+            try {
+                const mdResponse = await fetch(`${app.raw_readme_url}?t=${new Date().getTime()}`);
+                if(mdResponse.ok) {
+                    const mdText = await mdResponse.text();
+                    mdContainer.innerHTML = marked.parse(mdText);
+                } else {
+                    mdContainer.innerHTML = "<p><em>Keine description.md vorhanden.</em></p>";
+                }
+            } catch (e) {
+                mdContainer.innerHTML = "<p style='color:red'>Fehler beim Laden der Markdown-Datei.</p>";
+            }
+        }
+
+        // DIESE FUNKTION SCANNT JETZT VÖLLIG SELBSTSTÄNDIG DEN ORDNERBAUM ÜBER DIE COMMITS
+        async function loadIPKBuilds(appId) {
+            const downloadContainer = document.getElementById('ipk-downloads');
+            downloadContainer.innerHTML = '<li><em>Suche nach verfügbaren Builds...</em></li>';
+
+            const timestamp = new Date().getTime();
+
+            try {
+                // Schritt 1: Wir holen uns die Commits des IPK-Ordners für diese App.
+                // Das liefert uns verlässlich JEDE Datei, die dort jemals committet wurde.
+                const repoPath = `bin/build-webos/${appId}/ipk`;
+                const commitUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/commits?path=${repoPath}&t=${timestamp}`;
+                
+                const response = await fetch(commitUrl);
+                if (!response.ok) {
+                    downloadContainer.innerHTML = '<li><em style="color: var(--text-muted)">Bisher wurden keine IPK-Builds im Verzeichnis gefunden.</em></li>';
+                    return;
+                }
+
+                const commits = await response.json();
+                if (commits.length === 0) {
+                    downloadContainer.innerHTML = '<li><em style="color: var(--text-muted)">Keine Builds registriert.</em></li>';
+                    return;
+                }
+
+                // Schritt 2: Wir holen den exakten Datei-Baum (Tree) des neuesten Commits,
+                // um alle physisch existierenden Dateien im Ordner auszulesen.
+                const latestTreeSha = commits[0].commit.tree.sha;
+                const treeUrl = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/git/trees/${latestTreeSha}?recursive=1&t=${timestamp}`;
+                
+                const treeResponse = await fetch(treeUrl);
+                if (!treeResponse.ok) throw new Error("Fehler beim Auflösen der Git-Struktur.");
+
+                const treeData = await treeResponse.json();
+
+                // Schritt 3: Filtere alle Dateien heraus, die im gesuchten App-Pfad liegen und auf .ipk enden
+                const ipkFiles = treeData.tree.filter(item => 
+                    item.path.toLowerCase().startsWith(repoPath.toLowerCase()) && 
+                    item.path.toLowerCase().endsWith('.ipk')
+                );
+
+                if (ipkFiles.length === 0) {
+                    downloadContainer.innerHTML = '<li><em style="color: var(--text-muted)">Keine .ipk-Dateien im Verzeichnis gefunden.</em></li>';
+                    return;
+                }
+
+                // Extrahiere reinen Dateinamen aus dem Pfad ("bin/.../app.ipk" -> "app.ipk")
+                const processedFiles = ipkFiles.map(file => {
+                    const filename = file.path.split('/').pop();
+                    return {
+                        name: filename,
+                        download_url: `https://raw.githubusercontent.com/${GH_OWNER}/${GH_REPO}/master/${file.path}`
+                    };
+                });
+
+                // Numerische Sortierung (Höhere Versionen wie 1.3.0 nach oben)
+                processedFiles.sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true, sensitivity: 'base' }));
+
+                // Schritt 4: Alle gefundenen Builds rendern
+                downloadContainer.innerHTML = '';
+                processedFiles.forEach(file => {
+                    const li = document.createElement('li');
+                    li.className = 'download-item';
+                    li.innerHTML = `
+                        <div class="download-info">
+                            <span class="material-symbols-sharp" style="color: var(--accent)">package_2</span>
+                            <span>${file.name}</span>
+                        </div>
+                        <a href="${file.download_url}?t=${timestamp}" class="btn-download" download>
+                            <span class="material-symbols-sharp">download</span> Download
+                        </a>
+                    `;
+                    downloadContainer.appendChild(li);
+                });
+
+            } catch (error) {
+                downloadContainer.innerHTML = `<li><em style="color: #ef4444;">Fehler beim Abrufen der Builds: ${error.message}</em></li>`;
+            }
+        }
+
+        document.getElementById('back-btn').onclick = () => document.body.classList.remove('app-selected');
+        document.getElementById('search').addEventListener('input', (e) => renderSidebar(e.target.value));
+        document.addEventListener('DOMContentLoaded', loadWiki);
+    </script>
+</body>
+</html>

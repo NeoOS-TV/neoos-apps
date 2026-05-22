@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeoOS - Setup Wizard</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="webOSTVjs-1.2.4/webOSTV.js" charset="utf-8"></script>
+</head>
+<body>
+
+<div id="wizard-container">
+    
+    <div id="step-welcome" class="step-view active">
+        <div class="logo-area">
+            <span class="material-symbols-sharp main-logo">tv_gen</span>
+            <h1 class="wizard-title">Willkommen bei NeoOS</h1>
+            <p class="wizard-sub">Dein Smart TV Erlebnis beginnt hier.</p>
+        </div>
+        <div class="action-area">
+            <button class="wizard-btn focusable" onclick="nextStep('wlan')">
+                Einrichtung starten <span class="material-symbols-sharp">arrow_forward</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="step-wlan" class="step-view">
+        <div class="header-area">
+            <span class="material-symbols-sharp step-icon" id="wifi-main-icon">wifi</span>
+            <h2>Mit dem Netzwerk verbinden</h2>
+            <p id="wlan-status-text">Suche nach verfügbaren WLAN-Netzwerken...</p>
+        </div>
+        
+        <div class="list-area" id="wlan-networks-list">
+            <div class="loading-spinner">Suche läuft...</div>
+        </div>
+
+        <div class="action-area bottom-action">
+            <button class="wizard-btn neutral-btn focusable" onclick="scanWifiNetworks()">Aktualisieren</button>
+            <button class="wizard-btn neutral-btn focusable" onclick="nextStep('account')">Überspringen</button>
+        </div>
+    </div>
+
+    <div id="step-account" class="step-view">
+        <div class="header-area">
+            <span class="material-symbols-sharp step-icon">account_circle</span>
+            <h2>NeoAccount Anmeldung</h2>
+            <p>Melde dich an, um Senderlisten und Einstellungen zu synchronisieren.</p>
+        </div>
+
+        <div class="form-area">
+            <div class="input-row">
+                <input type="text" id="firebase-email" class="focusable input-field" placeholder="E-Mail Adresse" readonly>
+            </div>
+            <div class="input-row">
+                <input type="password" id="firebase-pass" class="focusable input-field" placeholder="Passwort" readonly>
+            </div>
+        </div>
+
+        <div class="action-area multi-action">
+            <button class="wizard-btn focusable" onclick="performLogin()">Anmelden</button>
+            <button class="wizard-btn neutral-btn focusable" onclick="nextStep('finish')">Später</button>
+        </div>
+    </div>
+
+    <div id="step-finish" class="step-view">
+        <div class="logo-area">
+            <span class="material-symbols-sharp main-logo" style="color: #4CAF50;">check_circle</span>
+            <h1 class="wizard-title">Erfolgreich eingerichtet!</h1>
+            <p class="wizard-sub">Dein NeoOS TV ist jetzt einsatzbereit.</p>
+        </div>
+        <div class="action-area">
+            <button class="wizard-btn focusable" onclick="launchNeoOSLauncher()">
+                Zum Launcher <span class="material-symbols-sharp">rocket_launch</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
