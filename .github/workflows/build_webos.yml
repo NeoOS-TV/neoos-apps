@@ -1,0 +1,142 @@
+name: Build webOS IPK & Create Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      app_folder:
+        description: 'Pfad zum App-Ordner (z.B. apps/com.neoos.app.emby)'
+        required: true
+        default: 'apps/'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Repository auschecken
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Node.js einrichten
+      uses: actions/setup-node@v4
+      with:
+        node-version: 18
+
+    - name: webOS TV CLI installieren
+      run: npm install -g @webos-tools/cli
+
+    - name: App-Metadaten auslesen & Verpacken
+      id: app_meta
+      run: |
+        FOLDER="${{ github.event.inputs.app_folder }}"
+        
+        # 1. Metadaten aus der appinfo.json extrahieren
+        if [ -f "$FOLDER/appinfo.json" ]; then
+          APP_ID=$(jq -r '.id' "$FOLDER/appinfo.json")
+          APP_TITLE=$(jq -r '.title' "$FOLDER/appinfo.json")
+          APP_VERSION=$(jq -r '.version' "$FOLDER/appinfo.json")
+        else
+          echo "::error::Keine appinfo.json im App-Ordner gefunden!"
+          exit 1
+        fi
+        
+        echo "app_id=$APP_ID" >> $GITHUB_OUTPUT
+        echo "app_title=$APP_TITLE" >> $GITHUB_OUTPUT
+        echo "app_version=$APP_VERSION" >> $GITHUB_OUTPUT
+        
+        # 2. Ordner für die Release-Assets anlegen
+        mkdir -p /tmp/release-assets
+        
+        # 3. Das vom Frontend hochgeladene temporäre Icon greifen
+        if [ -f "tmp_release_icon.png" ]; then
+          echo "🎨 Hochgeladenes Web-Icon gefunden, verschiebe in Release-Assets..."
+          mv tmp_release_icon.png /tmp/release-assets/icon.png
+        else
+          echo "Warnung: Kein temporäres Web-Icon im Root gefunden, nutze Fallback aus App-Ordner."
+          cp "$FOLDER/icon.png" /tmp/release-assets/icon.png || touch /tmp/release-assets/icon.png
+        fi
+
+        # 4. App mit webOS CLI verpacken
+        echo "📦 Verpacke aktuelle App-Version..."
+        ares-package $FOLDER
+        
+        # Exakten Dateinamen definieren (webOS Format)
+        EXPECTED_IPK="${APP_ID}_${APP_VERSION}_all.ipk"
+        
+        if [ -f "$EXPECTED_IPK" ]; then
+          mkdir -p /tmp/webos-builds
+          # Kopie für lokales Repo
+          cp "$EXPECTED_IPK" /tmp/webos-builds/
+          # Kopie für Release-Repo verschieben
+          mv "$EXPECTED_IPK" /tmp/release-assets/
+        else
+          echo "::error::Die erwartete Datei $EXPECTED_IPK wurde von ares-package nicht erzeugt!"
+          exit 1
+        fi
+
+    - name: Repository synchronisieren und lokales Repo aktualisieren
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        # Falls das temporäre Icon lokal noch physisch da ist, löschen
+        rm -f tmp_release_icon.png
+        
+        # Synchronisation mit dem Server, um Push-Konflikte zu vermeiden
+        git fetch origin ${{ github.ref_name }}
+        git checkout ${{ github.ref_name }}
+        git reset --hard origin/${{ github.ref_name }}
+        
+        # Das Icon restlos aus dem Git-Tracking entfernen, damit es nicht im Repo bleibt
+        git rm --cached tmp_release_icon.png || true
+        
+        TARGET_DIR="bin/build-webos/${{ steps.app_meta.outputs.app_id }}/ipk"
+        mkdir -p "$TARGET_DIR"
+        
+        mv /tmp/webos-builds/*.ipk "$TARGET_DIR/"
+        
+        git add "$TARGET_DIR"
+        
+        if git diff --staged --quiet; then
+          echo "Keine neuen Build-Dateien für das lokale Repo."
+        else
+          git commit -m "build: Neues webOS IPK-Paket für ${{ steps.app_meta.outputs.app_id }} hinzugefügt [skip ci]"
+          git push origin ${{ github.ref_name }}
+        fi
+
+    - name: Release im Speicher-Repository über API erzwingen
+      run: |
+        echo "🚀 Erstelle Release im Storage-Repository über Direkte API-Route..."
+        TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
+        TITLE="${{ steps.app_meta.outputs.app_title }}"
+        
+        # 1. Release-Eintrag im Ziel-Repository anlegen
+        API_RESPONSE=$(curl -s -X POST \
+          -H "Authorization: token ${{ secrets.NEOTOKEN }}" \
+          -H "Accept: application/vnd.github.v3+json" \
+          https://api.github.com/repos/NeoOS-TV/NeoStore-Storage/releases \
+          -d "{\"tag_name\":\"$TAG\",\"name\":\"$TITLE\",\"body\":\"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}\"}")
+        
+        RELEASE_ID=$(echo "$API_RESPONSE" | jq -r '.id')
+        
+        if [ "$RELEASE_ID" = "null" ] || [ -z "$RELEASE_ID" ]; then
+          echo "::error::GitHub API verweigert die Release-Erstellung!"
+          echo "GitHub API-Antwort: $API_RESPONSE"
+          exit 1
+        fi
+        
+        # 2. Assets (IPK und Icon) per Octet-Stream hochladen
+        for FILE in /tmp/release-assets/*; do
+          FILENAME=$(basename "$FILE")
+          echo "Uploade Asset: $FILENAME..."
+          curl -s -X POST \
+            -H "Authorization: token ${{ secrets.NEOTOKEN }}" \
+            -H "Content-Type: application/octet-stream" \
+            "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
+            --data-binary @"$FILE"
+        done
+        echo "✅ Release-Vorgang abgeschlossen!"
