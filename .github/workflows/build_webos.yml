@@ -108,7 +108,7 @@ jobs:
         fi
 
     - name: Release im Speicher-Repository über API erzwingen
-  run: |
+    run: |
     echo "🚀 Erstelle Release im Storage-Repository..."
     TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
     TITLE="${{ steps.app_meta.outputs.app_title }}"
