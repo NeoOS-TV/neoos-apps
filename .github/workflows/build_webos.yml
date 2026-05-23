@@ -49,7 +49,6 @@ jobs:
         
         mkdir -p /tmp/release-assets
         
-        # Holt das vom Frontend hochgeladene Bild aus dem Repository-Root
         if [ -f "tmp_release_icon.png" ]; then
           echo "🎨 Hochgeladenes Web-Icon gefunden, verschiebe in Release-Assets..."
           mv tmp_release_icon.png /tmp/release-assets/icon.png
@@ -77,14 +76,12 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         
-        # Physisch löschen falls noch da
         rm -f tmp_release_icon.png
         
         git fetch origin ${{ github.ref_name }}
         git checkout ${{ github.ref_name }}
         git reset --hard origin/${{ github.ref_name }}
         
-        # Das temporäre Icon komplett aus dem Git-Tracking löschen
         git rm --cached tmp_release_icon.png || true
         
         TARGET_DIR="bin/build-webos/${{ steps.app_meta.outputs.app_id }}/ipk"
@@ -101,7 +98,7 @@ jobs:
           git push origin ${{ github.ref_name }}
         fi
 
-        - name: Token-Check
+    - name: Token-Check
       run: |
         if [ -z "${{ secrets.NEOTOKEN }}" ]; then
           echo "::error::Das Secret NEOTOKEN ist leer! GitHub reicht es nicht an den Runner weiter."
@@ -110,15 +107,15 @@ jobs:
           echo "✅ Secret ist vorhanden."
         fi
 
-
     - name: Release im Speicher-Repository über API erzwingen
       run: |
         echo "🚀 Erstelle Release im Storage-Repository..."
         TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
         TITLE="${{ steps.app_meta.outputs.app_title }}"
         
+        # Nutzen von Bearer-Authentifizierung (zuverlässiger bei neuen feingranularen PATs)
         API_RESPONSE=$(curl -s -X POST \
-          -H "Authorization: token ${{ secrets.NEOTOKEN }}" \
+          -H "Authorization: Bearer ${{ secrets.NEOTOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
           https://api.github.com/repos/NeoOS-TV/NeoStore-Storage/releases \
           -d "{\"tag_name\":\"$TAG\",\"name\":\"$TITLE\",\"body\":\"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}\"}")
@@ -135,7 +132,7 @@ jobs:
           FILENAME=$(basename "$FILE")
           echo "Uploade Asset: $FILENAME..."
           curl -s -X POST \
-            -H "Authorization: token ${{ secrets.NEOTOKEN }}" \
+            -H "Authorization: Bearer ${{ secrets.NEOTOKEN }}" \
             -H "Content-Type: application/octet-stream" \
             "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
             --data-binary @"$FILE"
