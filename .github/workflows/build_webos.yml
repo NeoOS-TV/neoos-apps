@@ -108,33 +108,33 @@ jobs:
         fi
 
     - name: Release im Speicher-Repository über API erzwingen
-      run: |
-        echo "🚀 Erstelle Release im Storage-Repository..."
-        TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
-        TITLE="${{ steps.app_meta.outputs.app_title }}"
-        
-        # Nutzen von Bearer-Authentifizierung (zuverlässiger bei neuen feingranularen PATs)
-        API_RESPONSE=$(curl -s -X POST \
-          -H "Authorization: Bearer ${{ secrets.NEOTOKEN }}" \
-          -H "Accept: application/vnd.github.v3+json" \
-          https://api.github.com/repos/NeoOS-TV/NeoStore-Storage/releases \
-          -d "{\"tag_name\":\"$TAG\",\"name\":\"$TITLE\",\"body\":\"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}\"}")
-        
-        RELEASE_ID=$(echo "$API_RESPONSE" | jq -r '.id')
-        
-        if [ "$RELEASE_ID" = "null" ] || [ -z "$RELEASE_ID" ]; then
-          echo "::error::GitHub API verweigert die Release-Erstellung!"
-          echo "GitHub API-Antwort: $API_RESPONSE"
-          exit 1
-        fi
-        
-        for FILE in /tmp/release-assets/*; do
-          FILENAME=$(basename "$FILE")
-          echo "Uploade Asset: $FILENAME..."
-          curl -s -X POST \
-            -H "Authorization: Bearer ${{ secrets.NEOTOKEN }}" \
-            -H "Content-Type: application/octet-stream" \
-            "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
-            --data-binary @"$FILE"
-        done
-        echo "✅ Release erfolgreich erstellt!"
+  run: |
+    echo "🚀 Erstelle Release im Storage-Repository..."
+    TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
+    TITLE="${{ steps.app_meta.outputs.app_title }}"
+    
+    # Use GITHUB_TOKEN instead of NEOTOKEN
+    API_RESPONSE=$(curl -s -X POST \
+      -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+      -H "Accept: application/vnd.github.v3+json" \
+      https://api.github.com/repos/NeoOS-TV/NeoStore-Storage/releases \
+      -d "{\"tag_name\":\"$TAG\",\"name\":\"$TITLE\",\"body\":\"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}\"}")
+    
+    RELEASE_ID=$(echo "$API_RESPONSE" | jq -r '.id')
+    
+    if [ "$RELEASE_ID" = "null" ] || [ -z "$RELEASE_ID" ]; then
+      echo "::error::GitHub API verweigert die Release-Erstellung!"
+      echo "GitHub API-Antwort: $API_RESPONSE"
+      exit 1
+    fi
+    
+    for FILE in /tmp/release-assets/*; do
+      FILENAME=$(basename "$FILE")
+      echo "Uploade Asset: $FILENAME..."
+      curl -s -X POST \
+        -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+        -H "Content-Type: application/octet-stream" \
+        "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
+        --data-binary @"$FILE"
+    done
+    echo "✅ Release erfolgreich erstellt!"
