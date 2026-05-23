@@ -101,6 +101,16 @@ jobs:
           git push origin ${{ github.ref_name }}
         fi
 
+        - name: Token-Check
+      run: |
+        if [ -z "${{ secrets.NEOTOKEN }}" ]; then
+          echo "::error::Das Secret NEOTOKEN ist leer! GitHub reicht es nicht an den Runner weiter."
+          exit 1
+        else
+          echo "✅ Secret ist vorhanden."
+        fi
+
+
     - name: Release im Speicher-Repository über API erzwingen
       run: |
         echo "🚀 Erstelle Release im Storage-Repository..."
