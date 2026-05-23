@@ -1,6 +1,6 @@
 {
     "id": "com.neoos.app.neocast",
-    "version": "1.2.0",
+    "version": "1.20.0",
     "vendor": "NeoOS",
     "type": "web",
     "main": "index.html",
