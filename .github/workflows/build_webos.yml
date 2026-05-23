@@ -104,28 +104,38 @@ jobs:
         TAG="${{ steps.app_meta.outputs.app_id }}/${{ steps.app_meta.outputs.app_version }}"
         TITLE="${{ steps.app_meta.outputs.app_title }}"
         
-        # Use GITHUB_TOKEN instead of NEOTOKEN
+        # Debug: Test API access
+        echo "Testing API access to NeoStore-Storage..."
+        curl -s -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+          https://api.github.com/repos/NeoOS-TV/NeoStore-Storage | jq '.id'
+        
+        # Create release
         API_RESPONSE=$(curl -s -X POST \
           -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
           -H "Accept: application/vnd.github.v3+json" \
+          -H "Content-Type: application/json" \
           https://api.github.com/repos/NeoOS-TV/NeoStore-Storage/releases \
-          -d "{\"tag_name\":\"$TAG\",\"name\":\"$TITLE\",\"body\":\"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}\"}")
+          -d '{"tag_name":"'"$TAG"'","name":"'"$TITLE"'","body":"Automatisches Release. App-ID: ${{ steps.app_meta.outputs.app_id }} - Version: ${{ steps.app_meta.outputs.app_version }}"}')
         
+        echo "API Response: $API_RESPONSE"
         RELEASE_ID=$(echo "$API_RESPONSE" | jq -r '.id')
         
         if [ "$RELEASE_ID" = "null" ] || [ -z "$RELEASE_ID" ]; then
           echo "::error::GitHub API verweigert die Release-Erstellung!"
-          echo "GitHub API-Antwort: $API_RESPONSE"
           exit 1
         fi
         
+        echo "Release created with ID: $RELEASE_ID"
+        
         for FILE in /tmp/release-assets/*; do
-          FILENAME=$(basename "$FILE")
-          echo "Uploade Asset: $FILENAME..."
-          curl -s -X POST \
-            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
-            -H "Content-Type: application/octet-stream" \
-            "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
-            --data-binary @"$FILE"
+          if [ -f "$FILE" ]; then
+            FILENAME=$(basename "$FILE")
+            echo "Uploade Asset: $FILENAME..."
+            curl -s -X POST \
+              -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+              -H "Content-Type: application/octet-stream" \
+              "https://uploads.github.com/repos/NeoOS-TV/NeoStore-Storage/releases/$RELEASE_ID/assets?name=$FILENAME" \
+              --data-binary @"$FILE"
+          fi
         done
         echo "✅ Release erfolgreich erstellt!"
